@@ -40,7 +40,13 @@ class Loader(yaml.SafeLoader):
         :return: String values representing the extracted value for the specified path, key combination under node
         """
         path, key = self.construct_yaml_str(node).split(" ")
-        filename = os.path.join(self.ROOT_DIR, path)
+        
+        if path.startswith("./") or path.startswith("../"):
+            stream_path = os.path.dirname(self.stream.name)
+            filename = os.path.join(stream_path,path)
+            print("include=",filename)
+        else:
+            filename = os.path.join(self.ROOT_DIR, path)
 
         with open(filename, 'r') as f:
             yaml_structure = yaml.load(f, Loader)
